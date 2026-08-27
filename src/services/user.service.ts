@@ -62,3 +62,45 @@ export async function updateUserService(req: any) {
         return { status: 409, message: "error al actualizar usuario" }
     }
 }
+
+
+export async function deleteUserService(req: any) {
+    const { id } = req.body
+    try {
+        const userU = await db.orm.users
+            .where({ _id: id })
+            .delete()
+
+        if (userU) {
+            return { status: 200, message: "Usuario eliminado" }
+        } else {
+            return { status: 404, message: "Usuario no encontrado" }
+        }
+    } catch (e) {
+        return { status: 409, message: "error al eliminar usuario" }
+    }
+}
+
+export async function setUsuariosService(req: any) {
+
+    try {
+        const usuario = await db.orm.users.createAll(req.body)
+
+        if (usuario) {
+            return {
+                status: 201,
+                message: "Usuario creado"
+            }
+        } else {
+            return {
+                status: 403,
+                message: "error al crear usuario"
+            }
+        }
+    } catch (e) {
+        return {
+            status: 409,
+            message: "usuario duplicado"
+        }
+    }
+}
